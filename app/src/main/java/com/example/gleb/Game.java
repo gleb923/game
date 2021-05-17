@@ -16,10 +16,13 @@ public class Game extends SurfaceView implements Runnable {
     private long fps;
     private volatile boolean isPlaying;
     private boolean isPaused = false;
+    Hero hero;
 
     public Game(Context context, AttributeSet attrs) {
         super(context, attrs);
         holder = getHolder();
+
+        hero = new Hero(500, 500, "#124959");
     }
 
     private void draw() {
@@ -27,6 +30,8 @@ public class Game extends SurfaceView implements Runnable {
             Canvas canvas = holder.lockCanvas();
 
             canvas.drawColor(Color.BLUE);
+
+            hero.render(canvas);
 
             printDebuggingText(canvas);
 
@@ -38,10 +43,11 @@ public class Game extends SurfaceView implements Runnable {
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         paint.setTextSize(60);
-        canvas.drawText("FPS: " + fps, 30, 90, paint);
+        canvas.drawText("Hero: " + hero.x + ", "+ hero.y, 30, 90, paint);
     }
 
     private void update() {
+        hero.updatePosition(fps);
     }
 
     public void pause() {
