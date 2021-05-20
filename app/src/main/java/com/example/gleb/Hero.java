@@ -8,18 +8,17 @@ import android.util.Log;
 public class Hero {
     float x;
     float y;
-    String color;
+    private String color = "#eeffee";
 
-    float vx = 10;
-    float vy = 10;
+    float vx = 0;
+    float vy = 0;
     private float width = 20;
     private float height = 50;
     Paint paint;
 
-    Hero(float x, float y, String color) {
+    Hero(float x, float y) {
         this.x = x;
         this.y = y;
-        this.color = color;
         this.paint = new Paint();
     }
 
@@ -30,8 +29,8 @@ public class Hero {
 
 
     public void updatePosition(long fps) {
-        this.x = (float) (x + .1);
-        this.y = (float) (y + .1);
-        Log.i("new position", x + " : " + y);
+        float time = (fps == 0) ? 0 : 1f/fps;
+        this.x = x + time * vx;
+        this.y = y + time * vy;
     }
 }

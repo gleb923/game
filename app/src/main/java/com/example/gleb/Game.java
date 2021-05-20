@@ -22,7 +22,7 @@ public class Game extends SurfaceView implements Runnable {
         super(context, attrs);
         holder = getHolder();
 
-        hero = new Hero(500, 500, "#124959");
+        hero = new Hero(200, 200);
     }
 
     private void draw() {
@@ -43,7 +43,9 @@ public class Game extends SurfaceView implements Runnable {
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         paint.setTextSize(60);
-        canvas.drawText("Hero: " + hero.x + ", "+ hero.y, 30, 90, paint);
+        canvas.drawText(String.format("FPS: %d", fps), 30, 90, paint);
+        canvas.drawText("Hero: " + hero.x + ", "+ hero.y, 30, 150, paint);
+        canvas.drawText(String.format("Hero speed: %.2f, %.2f", hero.vx, hero.vy), 30, 210, paint);
     }
 
     private void update() {
@@ -82,5 +84,10 @@ public class Game extends SurfaceView implements Runnable {
         }
 
         draw();
+    }
+
+    public void setHeroSpeed(float vx, float vy) {
+        hero.vx = vx;
+        hero.vy = vy;
     }
 }
