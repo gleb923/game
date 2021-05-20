@@ -11,6 +11,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import static java.lang.Math.sqrt;
+
 public class Control extends View {
     private int width;
     private int height;
@@ -45,8 +47,18 @@ public class Control extends View {
         if (isPress) {
             float cx = centerX + shiftX;
             float cy = centerY + shiftY;
-            canvas.drawCircle(cx, cy, radiusIn, paint);
-        } else {
+            float radius_center = 80 - radiusIn/3;
+            float x = cx - centerX;
+            float y = cy - centerY;
+            float ratio = (float) sqrt(cx*cx + cy*cy) / radius_center;
+            if (sqrt(x*x + y*y) > radius_center) {
+                cx = cx / ratio;
+                cy = cy / ratio;
+            }
+
+            canvas.drawCircle(cx, (float) cy, radiusIn, paint);
+        }
+        else {
             canvas.drawCircle(centerX, centerY, radiusIn, paint);
         }
     }
