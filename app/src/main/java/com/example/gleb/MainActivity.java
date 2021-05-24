@@ -7,6 +7,7 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity {
     Game game;
     Control control;
+    ControlGun gun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,9 +16,13 @@ public class MainActivity extends AppCompatActivity {
 
         game = findViewById(R.id.gameView);
         control = findViewById(R.id.control);
-        control.setOnChangeListener((float vx, float vy) -> {
-            game.setHeroSpeed(vx, vy);
+        gun = findViewById(R.id.gun);
+
+        control.setOnChangeListener((float vx, float vy, float direction) -> {
+            game.setHeroSpeed(vx, vy, direction);
         });
+
+        gun.setOnShootListener(() -> game.shootHero());
     }
 
     @Override
@@ -26,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
         game.pause();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        game.resume();
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        game.resume();
+//    }
 }
