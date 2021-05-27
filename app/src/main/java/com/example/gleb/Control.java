@@ -5,22 +5,31 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import static java.lang.Math.sqrt;
-
 public class Control extends View {
     private int width;
     private int height;
     private boolean isPress = false;
+    private float radiusOut;
+    private float radiusIn;
+    protected float maxRadius;
+    private float centerX;
+    private float centerY;
     private float startX;
     private float startY;
+    private float maxShiftX = 0;
+    private float maxShiftY = 0;
     private float shiftX = 0;
     private float shiftY = 0;
+    private float degree = 0;
+    private float cx = 0;
+    private float cy = 0;
+    private float maxCX = 0;
+    private float maxCY = 0;
 
     OnChangeSpeed changeSpeedListener;
 
@@ -29,15 +38,25 @@ public class Control extends View {
     }
 
     @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        width = getWidth();
+        height = getHeight();
+        radiusOut = width / 2;
+        radiusIn = width / 4;
+        maxRadius = radiusOut - radiusIn;
+        centerX = width / 2;
+        centerY = height / 2;
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        width = canvas.getWidth();
-        height = canvas.getHeight();
-        float centerX = width / 2;
-        float centerY = width / 2;
-        float radiusOut = width / 2;
-        float radiusIn = width / 4;
+//        width = canvas.getWidth();
+//        height = canvas.getHeight();
+
+
 
         Paint paint = new Paint();
         paint.setColor(Color.argb(120, 255, 255, 255));
@@ -45,18 +64,7 @@ public class Control extends View {
 
         paint.setColor(Color.WHITE);
         if (isPress) {
-            float cx = centerX + shiftX;
-            float cy = centerY + shiftY;
-            float radius_center = 80 - radiusIn/3;
-            float x = cx - centerX;
-            float y = cy - centerY;
-            float ratio = (float) sqrt(cx*cx + cy*cy) / radius_center;
-            if (sqrt(x*x + y*y) > radius_center) {
-                cx = cx / ratio;
-                cy = cy / ratio;
-            }
-
-            canvas.drawCircle(cx, (float) cy, radiusIn, paint);
+            canvas.drawCircle(centerX + shiftX, centerY + shiftY, radiusIn, paint);
         }
         else {
             canvas.drawCircle(centerX, centerY, radiusIn, paint);
@@ -72,9 +80,28 @@ public class Control extends View {
         } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             shiftX = event.getX() - startX;
             shiftY = event.getY() - startY;
+            double radian = Math.atan(shiftX/shiftY);
+            degree = (float) Math.toDegrees(radian);
+
+            if (shiftY < 0) {
+                // 1, 2 сектор
+                degree += 90;
+            } else {
+                // 3, 4 сектор
+                degree += 270;
+            }
+
+            int sign = (degree > 0 && degree < 180) ? -1 : 1;
+            maxShiftX = (float)(sign * maxRadius * Math.sin(radian));
+            maxShiftY = (float)(sign * maxRadius * Math.cos(radian));
+
+            if (maxRadius*maxRadius < shiftX*shiftX + shiftY*shiftY) {
+                shiftX = maxShiftX;
+                shiftY = maxShiftY;
+            }
 
             if (changeSpeedListener != null) {
-                changeSpeedListener.onChange(shiftX, shiftY);
+                changeSpeedListener.onChange(shiftX, shiftY, degree);
             }
             invalidate();
         } else if (event.getAction() == MotionEvent.ACTION_UP && event.getPointerCount() == 1) {
@@ -89,7 +116,7 @@ public class Control extends View {
         shiftX = 0;
         shiftY = 0;
         if (changeSpeedListener != null) {
-            changeSpeedListener.onChange(shiftX, shiftY);
+            changeSpeedListener.onChange(shiftX, shiftY, degree);
         }
     }
 
@@ -98,6 +125,6 @@ public class Control extends View {
     }
 
     public static interface OnChangeSpeed {
-        void onChange(float vx, float vy);
+        void onChange(float vx, float vy, float degree);
     }
 }
