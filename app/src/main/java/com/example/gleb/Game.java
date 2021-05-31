@@ -12,6 +12,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -35,7 +36,8 @@ public class Game extends SurfaceView implements Runnable {
     RectF gameBoard;
     Bullet[] bullets = new Bullet[20];
     int nextIndex = 0;
-
+    private float health = 100;
+    private boolean isOver = false;
 
     Enemy[] enemies = new Enemy[100];
     int nextEnemyIndex = 0;
@@ -45,9 +47,9 @@ public class Game extends SurfaceView implements Runnable {
     public Game(Context context, AttributeSet attrs) {
         super(context, attrs);
         holder = getHolder();
-
-
     }
+
+
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -70,7 +72,7 @@ public class Game extends SurfaceView implements Runnable {
             hero.render(canvas);
 
             for (Bullet b : bullets) {
-                if (b != null) {
+                if (b != null && b.isLife()) {
                     b.render(canvas);
                 }
             }
@@ -82,9 +84,24 @@ public class Game extends SurfaceView implements Runnable {
             }
 
 //            printDebuggingText(canvas);
+            printHealth(canvas);
+
+            if (isPaused) {
+                Paint paint = new Paint();
+                paint.setTextSize(60);
+                paint.setColor(Color.WHITE);
+                canvas.drawText("Touch to start again!", 100, 100, paint);
+            }
 
             holder.unlockCanvasAndPost(canvas);
         }
+    }
+
+    private void printHealth(Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(60);
+        canvas.drawText("Health: " + health, 30, 90, paint);
     }
 
 //    private void printDebuggingText(Canvas canvas) {
@@ -100,7 +117,7 @@ public class Game extends SurfaceView implements Runnable {
         hero.updatePosition(fps);
 
         for (Bullet b : bullets) {
-            if (b != null) {
+            if (b != null && b.isLife()) {
                 b.updatePosition(fps);
             }
         }
@@ -108,20 +125,41 @@ public class Game extends SurfaceView implements Runnable {
         for (Enemy enemy : enemies) {
             if (enemy != null && !enemy.isDead()) {
                 enemy.updatePosition(fps);
+                if (hero.getBoundingRect().intersect(enemy.getBoundingRect())) {
+                    damage();
+                }
                 enemy.updateTargetPosition(hero.getCenterX(), hero.getCenterY());
                 for (Bullet bullet : bullets) {
-                    if (bullet == null) {
+                    if (bullet == null || !bullet.isLife()) {
                         continue;
                     }
 
                     if (bullet.getBoundingRect().intersect(enemy.getBoundingRect())) {
                         killEnemy(enemy);
+                        bullet.finish();
                     }
                 }
             }
         }
+    }
 
+    private void damage() {
+        health -= .5;
+        if (health <= 0) {
+            gameOver();
+        }
+    }
 
+    private void gameOver() {
+        isPaused = true;
+    }
+
+    public void reset() {
+        health = 100;
+        enemies = new Enemy[100];
+        nextEnemyIndex = 0;
+        createEnemy();
+        isPaused = false;
     }
 
     private void killEnemy(Enemy enemy) {
@@ -168,6 +206,7 @@ public class Game extends SurfaceView implements Runnable {
             if (!isPaused) {
                 update();
             }
+
             draw();
 
             long timeThisFrame = System.currentTimeMillis() - frameStartTime;
@@ -192,5 +231,15 @@ public class Game extends SurfaceView implements Runnable {
         if (nextIndex >= bullets.length) {
             nextIndex = 0;
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() ==MotionEvent.ACTION_DOWN) {
+            if (isPaused) {
+                reset();
+            }
+        }
+        return true;
     }
 }

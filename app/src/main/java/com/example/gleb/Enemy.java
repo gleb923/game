@@ -101,7 +101,7 @@ public class Enemy {
     }
 
     public RectF getBoundingRect() {
-        return new RectF(this.x - halfRadius, this.y - halfRadius, this.x + halfRadius, this.y + halfRadius);
+        return new RectF(x - 50, y - 45, x + 50, y + 45);
     }
 
     public void reset() {

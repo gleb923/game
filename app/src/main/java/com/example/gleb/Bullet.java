@@ -13,6 +13,7 @@ public class Bullet {
     private float y;
     private int radius = 10;
     private int halfRadius = 5;
+    private boolean life = true;
 
     public Bullet(float x, float y, float direction) {
         this.x = x;
@@ -45,5 +46,13 @@ public class Bullet {
 
     public RectF getBoundingRect() {
         return new RectF(this.x - halfRadius, this.y - halfRadius, this.x + halfRadius, this.y + halfRadius);
+    }
+
+    public void finish() {
+        life = false;
+    }
+
+    public boolean isLife() {
+        return life;
     }
 }

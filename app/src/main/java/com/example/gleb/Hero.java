@@ -39,7 +39,6 @@ public class Hero {
 
     }
 
-
     void render(Canvas canvas) {
 //        rotate_imagehero = Bitmap.createBitmap(imagehero, 0, 0, imagehero.getWidth(),imagehero.getHeight(),matrix,true);
         Matrix matrix = new Matrix();
@@ -79,6 +78,10 @@ public class Hero {
 
         this.y = Math.min(y + time * vy, gameBoard.bottom - height);
         this.y = Math.max(this.y, gameBoard.top);
+    }
+
+    public RectF getBoundingRect() {
+        return new RectF(x - 44, y - 20, x + 44, y + 20);
     }
 
 }
