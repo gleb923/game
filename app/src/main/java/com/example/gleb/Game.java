@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
@@ -182,7 +183,6 @@ public class Game extends SurfaceView implements Runnable {
         hero.vx = vx * 3;
         hero.vy = vy * 3;
         hero.direction = direction;
-        hero.matrix.setRotate(direction);
 //        hero.imagehero = Bitmap.createBitmap(hero.imagehero,0,0, hero.imagehero.getWidth(),hero.imagehero.getHeight(),hero.matrix,true);
     }
 

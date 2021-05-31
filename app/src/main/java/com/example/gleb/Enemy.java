@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
@@ -19,7 +20,8 @@ public class Enemy {
     private static float halfRadius = 15;
     private boolean dead = false;
     private static Random random = new Random();
-    Bitmap imageenemy;
+    private Bitmap imageenemy;
+    private float direction;
 
 
     Paint paint = new Paint();
@@ -62,7 +64,13 @@ public class Enemy {
     }
 
     public void render(Canvas canvas) {
-        canvas.drawBitmap(imageenemy,x-50, y-45,paint);
+        Matrix matrix = new Matrix();
+        float degrees = -direction + 90;
+        matrix.preRotate(degrees);
+//        paint.setColor(Color.parseColor(this.color));
+//        canvas.drawRect(x, y, x + width, y + height, paint );
+        canvas.drawBitmap(Bitmap.createBitmap(imageenemy, 0, 0, imageenemy.getWidth(), imageenemy.getHeight(), matrix,true), x-50, y-45,paint);
+//        canvas.drawBitmap(imageenemy,x-50, y-45,paint);
     }
 
     public void updatePosition(long fps) {
@@ -84,6 +92,8 @@ public class Enemy {
             // 3, 4 сектор
             degree += 270;
         }
+
+        direction = degree;
 
         int sign = (degree > 0 && degree < 180) ? -1 : 1;
         vx = (float)(sign * speed * Math.sin(radian));
