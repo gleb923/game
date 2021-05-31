@@ -1,6 +1,9 @@
 package com.example.gleb;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,6 +29,7 @@ public class Game extends SurfaceView implements Runnable {
     private volatile boolean isPlaying;
     private boolean isPaused = false;
     private Random random = new Random();
+    Bitmap imagehero;
     Hero hero;
     RectF gameBoard;
     Bullet[] bullets = new Bullet[20];
@@ -48,7 +52,9 @@ public class Game extends SurfaceView implements Runnable {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         gameBoard = new RectF(left, top, right, bottom);
-        hero = new Hero(getWidth() / 2, getHeight() / 2, gameBoard);
+        Bitmap imagehero = BitmapFactory.decodeResource(this.getResources(),R.drawable.imagehero);
+        hero = new Hero(getWidth() / 2, getHeight() / 2, gameBoard , imagehero);
+
         createEnemy();
         resume();
 
@@ -74,20 +80,20 @@ public class Game extends SurfaceView implements Runnable {
                 }
             }
 
-            printDebuggingText(canvas);
+//            printDebuggingText(canvas);
 
             holder.unlockCanvasAndPost(canvas);
         }
     }
 
-    private void printDebuggingText(Canvas canvas) {
-        Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(60);
-        canvas.drawText(String.format("FPS: %d", fps), 30, 90, paint);
-        canvas.drawText("Hero: " + hero.x + ", "+ hero.y, 30, 150, paint);
-        canvas.drawText(String.format("Hero speed: %.2f, %.2f, %.2f", hero.vx, hero.vy, hero.direction), 30, 210, paint);
-    }
+//    private void printDebuggingText(Canvas canvas) {
+//        Paint paint = new Paint();
+//        paint.setColor(Color.WHITE);
+//        paint.setTextSize(60);
+//        canvas.drawText(String.format("FPS: %d", fps), 30, 90, paint);
+//        canvas.drawText("Hero: " + hero.x + ", "+ hero.y, 30, 150, paint);
+//        canvas.drawText(String.format("Hero speed: %.2f, %.2f, %.2f", hero.vx, hero.vy, hero.direction), 30, 210, paint);
+//    }
 
     private void update() {
         hero.updatePosition(fps);
@@ -128,7 +134,9 @@ public class Game extends SurfaceView implements Runnable {
     }
 
     private void createEnemy() {
-        enemies[nextEnemyIndex] = Enemy.create(gameBoard);
+        Bitmap imageenemy = BitmapFactory.decodeResource(this.getResources(),R.drawable.imageenamy);
+        enemies[nextEnemyIndex] = Enemy.create(gameBoard, imageenemy);
+
         nextEnemyIndex++;
         if (nextEnemyIndex >= enemies.length) {
             nextEnemyIndex = 0;
@@ -174,6 +182,8 @@ public class Game extends SurfaceView implements Runnable {
         hero.vx = vx * 3;
         hero.vy = vy * 3;
         hero.direction = direction;
+        hero.matrix.setRotate(direction);
+//        hero.imagehero = Bitmap.createBitmap(hero.imagehero,0,0, hero.imagehero.getWidth(),hero.imagehero.getHeight(),hero.matrix,true);
     }
 
     public void shootHero() {

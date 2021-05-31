@@ -1,5 +1,7 @@
 package com.example.gleb;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,19 +19,23 @@ public class Enemy {
     private static float halfRadius = 15;
     private boolean dead = false;
     private static Random random = new Random();
+    Bitmap imageenemy;
+
 
     Paint paint = new Paint();
 
-    public Enemy(float x, float y) {
+    public Enemy(float x, float y, Bitmap imageenemy) {
         this.x = x;
         this.y = y;
+        this.imageenemy = Bitmap.createScaledBitmap(imageenemy,100, 100,true);
         paint.setColor(Color.WHITE);
     }
 
-    public static Enemy create(RectF gameBoard) {
+    public static Enemy create(RectF gameBoard, Bitmap imageenemy_create) {
         int position = random.nextInt(4);
         float x = 0;
         float y = 0;
+
 
         switch (position) {
             case 0: {
@@ -52,11 +58,11 @@ public class Enemy {
                 y = gameBoard.bottom + radius;
             }
         }
-        return new Enemy(x, y);
+        return new Enemy(x, y, imageenemy_create);
     }
 
     public void render(Canvas canvas) {
-        canvas.drawCircle(x, y, radius, paint);
+        canvas.drawBitmap(imageenemy,x-50, y-45,paint);
     }
 
     public void updatePosition(long fps) {
