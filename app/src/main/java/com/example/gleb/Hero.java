@@ -17,6 +17,7 @@ public class Hero {
 //    private String color = "#eeffee";
     Bitmap imagehero;
     private RectF gameBoard;
+    Matrix matrix = new Matrix();
 //    Bitmap rotate_imagehero;
 
 
@@ -39,22 +40,18 @@ public class Hero {
 
     }
 
+
     void render(Canvas canvas) {
 //        rotate_imagehero = Bitmap.createBitmap(imagehero, 0, 0, imagehero.getWidth(),imagehero.getHeight(),matrix,true);
-        Matrix matrix = new Matrix();
-//        float centerX = x + width / 2;
-//        float centerY = y + height / 2;
-//        float cx = centerX + (float)(100 * Math.cos(Math.toRadians(direction)));
-//        float cy = centerY + (float)(-1 * 100 * Math.sin(Math.toRadians(direction)));
-        float degrees = -direction + 90;
-        matrix.preRotate(degrees);
+        float centerX = x + width / 2;
+        float centerY = y + height / 2;
+        float cx = centerX + (float)(100 * Math.cos(Math.toRadians(direction)));
+        float cy = centerY + (float)(-1 * 100 * Math.sin(Math.toRadians(direction)));
 //        paint.setColor(Color.parseColor(this.color));
 //        canvas.drawRect(x, y, x + width, y + height, paint );
-        canvas.drawBitmap(Bitmap.createBitmap(imagehero, 0, 0, imagehero.getWidth(), imagehero.getHeight(), matrix,true), x-44, y-20,paint);
-//        paint.setTextSize(30);
-//        canvas.drawText(degrees + "", x, y, paint);
-//        canvas.drawBitmap(imagehero, x-44, y-20,paint);
-//        canvas.drawCircle(cx, cy, 10, paint);
+//        canvas.drawBitmap(Bitmap.createBitmap(imagehero, 0, 0, imagehero.getWidth(),imagehero.getHeight(),matrix,true), x-44, y-20,paint);
+        canvas.drawBitmap(imagehero, x-44, y-20,paint);
+        canvas.drawCircle(cx, cy, 10, paint);
 
 
     }
@@ -78,10 +75,6 @@ public class Hero {
 
         this.y = Math.min(y + time * vy, gameBoard.bottom - height);
         this.y = Math.max(this.y, gameBoard.top);
-    }
-
-    public RectF getBoundingRect() {
-        return new RectF(x - 44, y - 20, x + 44, y + 20);
     }
 
 }
