@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
 public class MainActivity extends AppCompatActivity {
     Game game;
     Control control;
@@ -26,11 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
         gun.setOnShootListener(() -> game.shootHero());
     }
-
-    private void exitGame() {
-        this.finish();
-    }
-
 
     @Override
     protected void onPause() {
