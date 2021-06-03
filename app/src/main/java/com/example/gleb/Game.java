@@ -88,9 +88,14 @@ public class Game extends SurfaceView implements Runnable {
 
             if (isPaused) {
                 Paint paint = new Paint();
-                paint.setTextSize(60);
+                paint.setTextSize(100);
+                paint.setStrokeWidth(5);
                 paint.setColor(Color.WHITE);
-                canvas.drawText("Touch to start again!", 100, 100, paint);
+                String text = "Touch to start again!";
+                float widthText = paint.measureText(text);
+                float x = (getWidth() - widthText) / 2;
+                float y = getHeight() / 2;
+                canvas.drawText(text, x, y, paint);
             }
 
             holder.unlockCanvasAndPost(canvas);
